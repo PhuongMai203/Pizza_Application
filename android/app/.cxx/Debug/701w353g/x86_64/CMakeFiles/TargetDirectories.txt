@@ -1,0 +1,2 @@
+D:/Pizza-Application/android/app/.cxx/Debug/701w353g/x86_64/CMakeFiles/edit_cache.dir
+D:/Pizza-Application/android/app/.cxx/Debug/701w353g/x86_64/CMakeFiles/rebuild_cache.dir
