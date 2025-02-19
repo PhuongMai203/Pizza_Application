@@ -5,6 +5,7 @@ import 'package:pizza_app/screens/home/blocs/get_pizza_bloc/get_pizza_bloc.dart'
 import 'package:pizza_app/screens/home/views/details_screen.dart';
 import '../../auth/blocs/cart_blocs/cart_bloc.dart';
 import '../../auth/blocs/sign_in_bloc/sign_in_bloc.dart';
+import '../../auth/views/cart_screen.dart';
 
 
 class HomeScreen extends StatelessWidget {
@@ -39,7 +40,16 @@ class HomeScreen extends StatelessWidget {
             builder: (context, cartState) {
               return IconButton(
                 onPressed: () {
-                  // Điều hướng tới màn hình giỏ hàng
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => BlocProvider.value(
+                        value: context.read<CartBloc>(),
+                        child: const CartScreen(),
+                      ),
+                    ),
+                  );
+
                 },
                 icon: Stack(
                   children: [
@@ -144,7 +154,7 @@ class HomeScreen extends StatelessWidget {
                                           : "SPICY",
                                       style: TextStyle(
                                         color: state.pizzas[i].spicy == 1
-                                            ? Colors.green
+                                            ? Colors.white
                                             : state.pizzas[i].spicy == 2
                                             ? Colors.orange
                                             : Colors.red,

@@ -423,7 +423,7 @@ packages:
   user_repository:
     dependency: "direct main"
     description:
-      path: "D:\\pizza_app\\packages\\user_repository"
+      path: "D:\\Pizza-Application\\packages\\user_repository"
       relative: false
     source: path
     version: "1.0.0+1"
