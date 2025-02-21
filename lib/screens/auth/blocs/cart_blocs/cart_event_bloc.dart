@@ -2,36 +2,62 @@ import 'package:equatable/equatable.dart';
 import 'package:pizza_repository/pizza_repository.dart';
 
 abstract class CartEvent extends Equatable {
+  const CartEvent();
+
   @override
   List<Object> get props => [];
 }
 
-class AddToCartEvent extends CartEvent {
+class AddToCart extends CartEvent {
   final Pizza pizza;
 
-  AddToCartEvent(this.pizza);
+  const AddToCart(this.pizza);
 
   @override
   List<Object> get props => [pizza];
 }
 
-class RemoveFromCartEvent extends CartEvent {
+class RemoveFromCart extends CartEvent {
   final Pizza pizza;
 
-  RemoveFromCartEvent(this.pizza);
+  const RemoveFromCart(this.pizza);
 
   @override
   List<Object> get props => [pizza];
 }
 
-class IncreaseQuantityEvent extends CartEvent {
+class IncreaseQuantity extends CartEvent {
   final int index;
 
-  IncreaseQuantityEvent({required this.index});
+  const IncreaseQuantity({required this.index});
+
+  @override
+  List<Object> get props => [index];
 }
 
-class DecreaseQuantityEvent extends CartEvent {
+class DecreaseQuantity extends CartEvent {
   final int index;
 
-  DecreaseQuantityEvent({required this.index});
+  const DecreaseQuantity({required this.index});
+
+  @override
+  List<Object> get props => [index];
+}
+
+class ToggleSelectPizza extends CartEvent {
+  final Pizza pizza;
+  final bool isSelected;
+
+  const ToggleSelectPizza({required this.pizza, required this.isSelected});
+
+  @override
+  List<Object> get props => [pizza, isSelected];
+}
+class IncreasePizzaQuantity extends CartEvent {
+  final Pizza pizza;
+
+  IncreasePizzaQuantity(this.pizza);
+
+  @override
+  List<Object> get props => [pizza];
 }

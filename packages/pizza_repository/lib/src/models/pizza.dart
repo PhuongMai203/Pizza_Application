@@ -12,6 +12,7 @@ class Pizza {
   final int discount;
   final Macros macros;
   final int quantity; // Thêm quantity
+  final bool isSelected; // Bỏ late final
 
   Pizza({
     required this.pizzaId,
@@ -24,9 +25,10 @@ class Pizza {
     required this.discount,
     required this.macros,
     this.quantity = 1, // Mặc định số lượng là 1
+    this.isSelected = false, // Mặc định không được chọn
   });
 
-  Pizza copyWith({int? quantity}) {
+  Pizza copyWith({int? quantity, bool? isSelected}) {
     return Pizza(
       pizzaId: pizzaId,
       picture: picture,
@@ -38,6 +40,7 @@ class Pizza {
       discount: discount,
       macros: macros,
       quantity: quantity ?? this.quantity, // Copy quantity
+      isSelected: isSelected ?? this.isSelected, // Copy isSelected
     );
   }
 
@@ -53,6 +56,7 @@ class Pizza {
       discount: discount,
       macros: macros.toEntity(),
       quantity: quantity,
+      isSelected: isSelected,
     );
   }
 
@@ -68,6 +72,7 @@ class Pizza {
       discount: entity.discount,
       macros: Macros.fromEntity(entity.macros),
       quantity: entity.quantity, // Lấy quantity từ entity
+      isSelected: entity.isSelected, // Lấy isSelected từ entity
     );
   }
 }

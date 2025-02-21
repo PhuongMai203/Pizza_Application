@@ -24,8 +24,12 @@ class MyAppView extends StatelessWidget {
           create: (context) => AuthenticationBloc(userRepository: userRepository),
         ),
         BlocProvider(
+          create: (context) => SignInBloc(userRepository),
+        ),
+        BlocProvider(
           create: (context) => CartBloc(), // ✅ Cung cấp CartBloc ở đây
         ),
+
       ],
       child: Builder( // ✅ Dùng Builder để có đúng BuildContext
         builder: (context) {

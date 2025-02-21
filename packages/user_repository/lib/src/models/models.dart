@@ -8,17 +8,20 @@ class MyUser{
   String name;
   late String password;
   bool hasActiveCart;
+  final String avatarUrl;
   MyUser({
     required this.userId,
     required this.email,
     required this.name,
     required this.hasActiveCart,
+    required this.avatarUrl,
   });
    static final empty = MyUser(
     userId: '',
     email: '',
     name: '',
     hasActiveCart: false,
+    avatarUrl: '',
     );
 
     MyUserEntity toEntity(){
@@ -27,6 +30,7 @@ class MyUser{
         email: email,
         name: name,
         hasActiveCart: hasActiveCart,
+        avatarUrl: avatarUrl,
       );
     }
     static MyUser fromEntity(MyUserEntity entity){
@@ -34,12 +38,12 @@ class MyUser{
         userId: entity.userId, 
         email: entity.email, 
         name: entity.name, 
-        hasActiveCart: entity.hasActiveCart
+        hasActiveCart: entity.hasActiveCart,
+        avatarUrl: entity.avatarUrl,
         );
     }
-    @override
+  @override
   String toString() {
-    // TODO: implement toString
-    return 'MyUser: $userId, $email,$name, $hasActiveCart';
+    return 'MyUser: userId=$userId, email=$email, name=$name, hasActiveCart=$hasActiveCart, avatarUrl=$avatarUrl';
   }
 }

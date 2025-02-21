@@ -27,6 +27,12 @@ dependencies:
   pizza_repository:
     path: D:/Pizza-Application/packages/pizza_repository
   firebase_core_web: ^2.20.0
+  intl: ^0.20.2
+  collection: ^1.19.1
+  image_picker: ^1.1.2
+
+
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

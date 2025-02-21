@@ -23,7 +23,6 @@ class _WelcomeScreenState extends State<WelcomeScreen> with TickerProviderStateM
   late TabController tabController;
   @override
   void initState() {
-    // TODO: implement initState
     tabController = TabController(
         initialIndex: 0,
         length: 2,
@@ -31,7 +30,6 @@ class _WelcomeScreenState extends State<WelcomeScreen> with TickerProviderStateM
     );
     super.initState();
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -70,7 +68,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> with TickerProviderStateM
               Align(
                 alignment: Alignment.center,
                 child: SizedBox(
-                  height: MediaQuery.of(context).size.width/1.8,
+                  height: MediaQuery.of(context).size.height * 0.5,
                   child: Column(
                     children: [
                       Padding(
@@ -112,10 +110,10 @@ class _WelcomeScreenState extends State<WelcomeScreen> with TickerProviderStateM
                               ),
                               child: const SignInScreen(),
                             ),
-                            BlocProvider<ForgotPasswordBloc>(
-                              create: (context) => ForgotPasswordBloc(), // Không truyền tham số
-                              child: const ForgotPasswordScreen(),
-                            ),
+                            // BlocProvider<ForgotPasswordBloc>(
+                            //   create: (context) => ForgotPasswordBloc(), // Không truyền tham số
+                            //   child: const ForgotPasswordScreen(),
+                            // ),
                             BlocProvider<SignUpBloc>(
                               create: (context) => SignUpBloc(
                                 context.read<AuthenticationBloc>().userRepository,

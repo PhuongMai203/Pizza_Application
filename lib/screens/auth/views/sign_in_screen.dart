@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../components/my_text_fiedl.dart';
+import '../blocs/forgot_pass/forgot_password_bloc.dart';
 import '../blocs/sign_in_bloc/sign_in_bloc.dart';
 import 'forgot_password_screen.dart';
 
@@ -100,18 +101,17 @@ class _SignInScreenState extends State<SignInScreen> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => ForgotPasswordScreen()),
+                    MaterialPageRoute(
+                      builder: (context) => BlocProvider(
+                        create: (context) => ForgotPasswordBloc(),
+                        child: const ForgotPasswordScreen(),
+                      ),
+                    ),
                   );
                 },
-                child: const Text(
-                  "Quên mật khẩu?",
-                  style: TextStyle(
-                    color: Colors.blue,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
+                child: const Text("Quên mật khẩu?", style: TextStyle(color: Colors.blue)),
               ),
+
               const SizedBox(height: 5),
               !signInRequired
                   ? SizedBox(

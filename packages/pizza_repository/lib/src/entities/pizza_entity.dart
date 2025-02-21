@@ -12,7 +12,7 @@ class PizzaEntity {
   final int discount;
   final MacrosEntity macros;
   final int quantity;
-
+  final bool isSelected;
 
   PizzaEntity({
     required this.pizzaId,
@@ -25,6 +25,7 @@ class PizzaEntity {
     required this.discount,
     required this.macros,
     required this.quantity,
+    required this.isSelected,
   });
 
   Map<String, Object?> toDocument() {
@@ -39,6 +40,7 @@ class PizzaEntity {
       'discount': discount,
       'macros': macros.toDocument(),
       'quantity': quantity,
+      'isSelected': isSelected,
     };
   }
 
@@ -56,6 +58,9 @@ class PizzaEntity {
       quantity: doc.containsKey('quantity') && doc['quantity'] is int
           ? doc['quantity']
           : 1,
+      isSelected: doc.containsKey('isSelected') && doc['isSelected'] is bool
+          ? doc['isSelected']
+          : false, // Đọc từ document
     );
   }
 }

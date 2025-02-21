@@ -3,20 +3,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pizza_app/screens/home/blocs/get_pizza_bloc/get_pizza_bloc.dart';
 import 'package:pizza_app/screens/home/views/details_screen.dart';
+import 'package:pizza_app/screens/home/views/user_profile_screen.dart';
 import '../../auth/blocs/cart_blocs/cart_bloc.dart';
+import '../../auth/blocs/cart_blocs/cart_event_bloc.dart';
 import '../../auth/blocs/sign_in_bloc/sign_in_bloc.dart';
 import '../../auth/views/cart_screen.dart';
-
+import 'package:intl/intl.dart'; // Import thư viện intl
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
 
+  const HomeScreen({super.key});
+  static final formatCurrency = NumberFormat.currency(locale: 'vi_VN', symbol: '₫');
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.blue.shade50,
       appBar: AppBar(
-        backgroundColor: Colors.blue.shade50,
+        backgroundColor: Colors.white,
         title: Row(
           children: [
             Image.asset(
@@ -62,8 +65,8 @@ class HomeScreen extends StatelessWidget {
                           radius: 8,
                           backgroundColor: Colors.red,
                           child: Text(
-                            cartState.pizzas.length.toString(),
-                            style: TextStyle(
+                            cartState.pizzas.fold(0, (sum, pizza) => sum + pizza.quantity).toString(), // ✅ Tính tổng số lượng
+                            style: const TextStyle(
                               fontSize: 12,
                               color: Colors.white,
                             ),
@@ -81,6 +84,21 @@ class HomeScreen extends StatelessWidget {
             },
             icon: const Icon(CupertinoIcons.arrow_right_to_line),
           ),
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => BlocProvider.value(
+                    value: context.read<SignInBloc>(), // ✅ Đảm bảo SignInBloc được cung cấp
+                    child: const UserProfileScreen(),
+                  ),
+                ),
+              );
+            },
+            icon: const Icon(CupertinoIcons.person_alt_circle),
+          ),
+
         ],
       ),
       body: Padding(
@@ -129,11 +147,11 @@ class HomeScreen extends StatelessWidget {
                                   child: Padding(
                                     padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
                                     child: Text(
-                                      state.pizzas[i].isVeg ? "VEG" : "NON-VEG",
+                                      state.pizzas[i].isVeg ? "CÓ RAU CỦ" : "KHÔNG RAU CỦ",
                                       style: TextStyle(
                                         color: Colors.white,
                                         fontWeight: FontWeight.bold,
-                                        fontSize: 10,
+                                        fontSize: 8,
                                       ),
                                     ),
                                   ),
@@ -148,10 +166,10 @@ class HomeScreen extends StatelessWidget {
                                     padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
                                     child: Text(
                                       state.pizzas[i].spicy == 1
-                                          ? "BLAND"
+                                          ? "KHÔNG CAY"
                                           : state.pizzas[i].spicy == 2
-                                          ? "BALANCE"
-                                          : "SPICY",
+                                          ? "CAY VỪA"
+                                          : "CAY",
                                       style: TextStyle(
                                         color: state.pizzas[i].spicy == 1
                                             ? Colors.white
@@ -159,7 +177,7 @@ class HomeScreen extends StatelessWidget {
                                             ? Colors.orange
                                             : Colors.red,
                                         fontWeight: FontWeight.w800,
-                                        fontSize: 10,
+                                        fontSize: 8,
                                       ),
                                     ),
                                   ),
@@ -187,57 +205,68 @@ class HomeScreen extends StatelessWidget {
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                            padding: const EdgeInsets.symmetric(horizontal: 18.0),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Row(
                                   children: [
                                     Text(
-                                      "\$${state.pizzas[i].price - (state.pizzas[i].price * (state.pizzas[i].discount) / 100)}",
+                                      formatCurrency.format(state.pizzas[i].price - (state.pizzas[i].price * state.pizzas[i].discount / 100)),
                                       style: TextStyle(
                                           fontSize: 18,
                                           color: Theme.of(context).colorScheme.primary,
-                                          fontWeight: FontWeight.w700),
+                                          fontWeight: FontWeight.w700
+                                      ),
                                     ),
-                                    const SizedBox(width: 5),
+                                    const SizedBox(width: 10),
                                     Text(
-                                      "\$${state.pizzas[i].price}.00",
+                                      formatCurrency.format(state.pizzas[i].price), // Hiển thị giá gốc
                                       style: TextStyle(
                                           fontSize: 12,
                                           color: Colors.grey.shade500,
                                           fontWeight: FontWeight.w700,
-                                          decoration: TextDecoration.lineThrough),
-                                    ),
-                                  ],
-                                ),
-                                Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    IconButton(
-                                      onPressed: () {
-                                        context.read<CartBloc>().removeFromCart(state.pizzas[i]);
-                                      },
-                                      icon: const Icon(
-                                        CupertinoIcons.minus_circle_fill,
-                                        size: 20,
-                                      ),
-                                    ),
-                                    Transform.translate(
-                                      offset: Offset(-10, 0), // Đẩy nút "+" sang trái
-                                      child: IconButton(
-                                        onPressed: () {
-                                          context.read<CartBloc>().addToCart(state.pizzas[i]);
-                                        },
-                                        icon: const Icon(
-                                          CupertinoIcons.add_circled_solid,
-                                          size: 20,
-                                        ),
+                                          decoration: TextDecoration.lineThrough
                                       ),
                                     ),
                                   ],
                                 ),
-
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 0.5),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                IconButton(
+                                  onPressed: () {
+                                    context.read<CartBloc>().add(RemoveFromCart(state.pizzas[i]));
+                                  },
+                                  icon: const Icon(
+                                    CupertinoIcons.minus_circle,
+                                    size: 20,
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                                  child: Text(
+                                    "${state.pizzas[i].quantity}",
+                                    style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold
+                                    ),
+                                  ),
+                                ),
+                                IconButton(
+                                    onPressed: () {
+                                      context.read<CartBloc>().add(AddToCart(state.pizzas[i]));
+                                    },
+                                    icon: const Icon(
+                                      CupertinoIcons.add_circled,
+                                      size: 20,
+                                    ),
+                                  ),
                               ],
                             ),
                           ),
