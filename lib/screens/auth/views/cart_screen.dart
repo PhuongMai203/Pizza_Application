@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:pizza_repository/pizza_repository.dart';
 import '../blocs/cart_blocs/cart_bloc.dart';
 import '../blocs/cart_blocs/cart_event_bloc.dart';
+import 'checkout_screen.dart';
 
 class CartScreen extends StatefulWidget {
   const CartScreen({super.key});
@@ -114,7 +115,6 @@ class _CartScreenState extends State<CartScreen> {
                                   size: 20,
                                 ),
                               ),
-
                             ],
                           ),
                         ),
@@ -166,7 +166,18 @@ class _CartScreenState extends State<CartScreen> {
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
-              onPressed: totalPrice > 0 ? () {} : null,
+              onPressed: totalPrice > 0 ? () {
+                List<Pizza> selectedPizzas = pizzas.where((pizza) => pizza.isSelected).toList();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CheckoutScreen(
+                      selectedPizzas: selectedPizzas,
+                      totalPrice: totalPrice,
+                    ),
+                  ),
+                );
+              } : null,
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.red,
                 padding: const EdgeInsets.symmetric(vertical: 14),
@@ -174,7 +185,7 @@ class _CartScreenState extends State<CartScreen> {
                     borderRadius: BorderRadius.circular(10)),
               ),
               child: const Text(
-                "Thanh toán",
+                "Đặt hàng",
                 style: TextStyle(fontSize: 18, color: Colors.white),
               ),
             ),

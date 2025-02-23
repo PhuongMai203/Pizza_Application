@@ -32,17 +32,21 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Widget build(BuildContext context) {
     return BlocListener<SignUpBloc, SignUpState>(
       listener: (context, state) {
-        if(state is SignUpSuccess) {
-          setState(() {
-            signUpRequired = false;
-          });
+        if (state is SignUpSuccess) {
+          if (mounted) {
+            setState(() {
+              signUpRequired = false;
+            });
+          }
           // Điều hướng sang màn hình Sign In
           Navigator.pushReplacementNamed(context, '/signIn');
-        } else if(state is SignUpProcess) {
-          setState(() {
-            signUpRequired = true;
-          });
-        } else if(state is SignUpFailure) {
+        } else if (state is SignUpProcess) {
+          if (mounted) {
+            setState(() {
+              signUpRequired = true;
+            });
+          }
+        } else if (state is SignUpFailure) {
           return;
         }
       },
