@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../auth/blocs/sign_in_bloc/sign_in_bloc.dart';
 import '../../auth/views/forgot_password_screen.dart';
+import '../../auth/views/order_history_screen.dart';
 import '../../auth/views/sign_in_screen.dart';
 import '../../auth/views/welcome_screen.dart';
 
@@ -58,8 +59,12 @@ class UserProfileScreen extends StatelessWidget {
                   CupertinoIcons.chevron_forward, color: Colors.grey),
               // Màu icon mũi tên
               onTap: () {
-                // Chuyển sang trang lịch sử đơn hàng
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const OrderHistoryScreen()),
+                );
               },
+
             ),
           ),
 
