@@ -1,8 +1,8 @@
 class MacrosEntity {
-  int calories;
-  int proteins;
-  int fat;
-  int carbs;
+  final int calories;
+  final int proteins;
+  final int fat;
+  final int carbs;
 
   MacrosEntity({
     required this.calories,
@@ -11,7 +11,8 @@ class MacrosEntity {
     required this.carbs,
   });
 
-  Map<String, Object?> toDocument() {
+  // ✅ Chuyển MacrosEntity thành Map để lưu vào Firestore
+  Map<String, dynamic> toMap() {
     return {
       'calories': calories,
       'proteins': proteins,
@@ -20,13 +21,13 @@ class MacrosEntity {
     };
   }
 
-  static MacrosEntity fromDocument(Map<String, dynamic> doc) {
-  return MacrosEntity(
-    calories: doc['calories'] != null ? (doc['calories'] as num).toInt() : 0,
-    proteins: doc['proteins'] != null ? (doc['proteins'] as num).toInt() : 0,
-    carbs: doc['carbs'] != null ? (doc['carbs'] as num).toInt() : 0,
-    fat: doc['fat'] != null ? (doc['fat'] as num).toInt() : 0,
-  );
-}
-
+  // ✅ Chuyển Map từ Firestore thành MacrosEntity
+  static MacrosEntity fromMap(Map<String, dynamic> map) {
+    return MacrosEntity(
+      calories: map['calories'] ?? 0,
+      proteins: map['proteins'] ?? 0,
+      fat: map['fat'] ?? 0,
+      carbs: map['carbs'] ?? 0,
+    );
+  }
 }

@@ -14,7 +14,7 @@ class OrderHistoryScreen extends StatelessWidget {
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text("Lịch sử đơn hàng"),
-        backgroundColor: Colors.blue.shade50,
+        backgroundColor: Colors.blue.shade100,
       ),
       body: OrderStorage.orderHistory.isEmpty
           ? const Center(child: Text("Chưa có đơn hàng nào được hoàn thành!"))

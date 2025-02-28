@@ -11,8 +11,8 @@ class Pizza {
   final int price;
   final int discount;
   final Macros macros;
-  final int quantity; // Thêm quantity
-  final bool isSelected; // Bỏ late final
+  final int quantity;
+  final bool isSelected;
 
   Pizza({
     required this.pizzaId,
@@ -24,26 +24,26 @@ class Pizza {
     required this.price,
     required this.discount,
     required this.macros,
-    this.quantity = 1, // Mặc định số lượng là 1
-    this.isSelected = false, // Mặc định không được chọn
+    this.quantity = 1,
+    this.isSelected = false,
   });
-
-  Pizza copyWith({int? quantity, bool? isSelected}) {
+  // ✅ Chuyển từ PizzaEntity sang Pizza
+  static Pizza fromEntity(PizzaEntity entity) {
     return Pizza(
-      pizzaId: pizzaId,
-      picture: picture,
-      isVeg: isVeg,
-      spicy: spicy,
-      name: name,
-      description: description,
-      price: price,
-      discount: discount,
-      macros: macros,
-      quantity: quantity ?? this.quantity, // Copy quantity
-      isSelected: isSelected ?? this.isSelected, // Copy isSelected
+      pizzaId: entity.pizzaId,
+      picture: entity.picture,
+      isVeg: entity.isVeg,
+      spicy: entity.spicy,
+      name: entity.name,
+      description: entity.description,
+      price: entity.price,
+      discount: entity.discount,
+      macros: Macros.fromEntity(entity.macros),
+      quantity: entity.quantity,
+      isSelected: entity.isSelected,
     );
   }
-
+  // ✅ Chuyển Pizza thành PizzaEntity
   PizzaEntity toEntity() {
     return PizzaEntity(
       pizzaId: pizzaId,
@@ -59,20 +59,53 @@ class Pizza {
       isSelected: isSelected,
     );
   }
-
-  static Pizza fromEntity(PizzaEntity entity) {
+  Pizza copyWith({int? quantity, bool? isSelected}) {
     return Pizza(
-      pizzaId: entity.pizzaId,
-      picture: entity.picture,
-      isVeg: entity.isVeg,
-      spicy: entity.spicy,
-      name: entity.name,
-      description: entity.description,
-      price: entity.price,
-      discount: entity.discount,
-      macros: Macros.fromEntity(entity.macros),
-      quantity: entity.quantity, // Lấy quantity từ entity
-      isSelected: entity.isSelected, // Lấy isSelected từ entity
+      pizzaId: pizzaId,
+      picture: picture,
+      isVeg: isVeg,
+      spicy: spicy,
+      name: name,
+      description: description,
+      price: price,
+      discount: discount,
+      macros: macros,
+      quantity: quantity ?? this.quantity,
+      isSelected: isSelected ?? this.isSelected,
+    );
+  }
+
+  // ✅ Chuyển Pizza thành Map để lưu vào Firestore
+  Map<String, dynamic> toMap() {
+    return {
+      'pizzaId': pizzaId,
+      'picture': picture,
+      'isVeg': isVeg,
+      'spicy': spicy,
+      'name': name,
+      'description': description,
+      'price': price,
+      'discount': discount,
+      'macros': macros.toMap(),
+      'quantity': quantity,
+      'isSelected': isSelected,
+    };
+  }
+
+  // ✅ Chuyển từ Map Firestore thành Pizza object
+  factory Pizza.fromMap(Map<String, dynamic> map) {
+    return Pizza(
+      pizzaId: map['pizzaId'] ?? '',
+      picture: map['picture'] ?? '',
+      isVeg: map['isVeg'] ?? false,
+      spicy: map['spicy'] ?? 0,
+      name: map['name'] ?? '',
+      description: map['description'] ?? '',
+      price: map['price'] ?? 0,
+      discount: map['discount'] ?? 0,
+      macros: Macros.fromMap(map['macros'] ?? {}),
+      quantity: map['quantity'] ?? 1,
+      isSelected: map['isSelected'] ?? false,
     );
   }
 }

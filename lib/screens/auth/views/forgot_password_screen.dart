@@ -42,14 +42,26 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Quên mật khẩu")),
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+          title: const Text(
+            "Quên mật khẩu"
+      ),
+        backgroundColor: Colors.blue.shade50,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const Text("Nhập email của bạn để đặt lại mật khẩu:"),
+            const Text(
+              "Nhập email của bạn để đặt lại mật khẩu:",
+              style: TextStyle(
+                fontSize: 16, // Điều chỉnh cỡ chữ
+                fontWeight: FontWeight.bold, // In đậm
+              ),
+            ),
             const SizedBox(height: 10),
             TextField(
               controller: emailController,
@@ -61,7 +73,13 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: sendPasswordResetEmail,
-              child: const Text("Nhận email"),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blueAccent,
+                foregroundColor: Colors.white,
+              ),
+              child: const Text(
+                  "Nhận email",
+              ),
             ),
           ],
         ),

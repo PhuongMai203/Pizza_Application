@@ -61,3 +61,8 @@ class IncreasePizzaQuantity extends CartEvent {
   @override
   List<Object> get props => [pizza];
 }
+class LoadCart extends CartEvent {
+  @override
+  List<Object> get props => [];
+}
+

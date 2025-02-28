@@ -14,7 +14,6 @@ class PizzaEntity {
   final int quantity;
   final bool isSelected;
 
-
   PizzaEntity({
     required this.pizzaId,
     required this.picture,
@@ -27,10 +26,10 @@ class PizzaEntity {
     required this.macros,
     required this.quantity,
     required this.isSelected,
-
   });
 
-  Map<String, Object?> toDocument() {
+  // ✅ Chuyển PizzaEntity thành Map để lưu vào Firestore
+  Map<String, dynamic> toMap() {
     return {
       'pizzaId': pizzaId,
       'picture': picture,
@@ -40,31 +39,26 @@ class PizzaEntity {
       'description': description,
       'price': price,
       'discount': discount,
-      'macros': macros.toDocument(),
+      'macros': macros.toMap(),
       'quantity': quantity,
       'isSelected': isSelected,
-
     };
   }
 
-  static PizzaEntity fromDocument(Map<String, dynamic> doc) {
+  // ✅ Chuyển Map từ Firestore thành PizzaEntity
+  static PizzaEntity fromMap(Map<String, dynamic> map) {
     return PizzaEntity(
-      pizzaId: doc['pizzaId'] ?? '',
-      picture: doc['picture'] ?? '',
-      isVeg: doc['isVeg'] ?? false,
-      spicy: doc['spicy'] ?? 0,
-      name: doc['name'] ?? '',
-      description: doc['description'] ?? '',
-      price: doc['price'] ?? 0,
-      discount: doc['discount'] ?? 0,
-      macros: MacrosEntity.fromDocument(doc['macros'] ?? {}),
-      quantity: doc.containsKey('quantity') && doc['quantity'] is int
-          ? doc['quantity']
-          : 1,
-      isSelected: doc.containsKey('isSelected') && doc['isSelected'] is bool
-          ? doc['isSelected']
-          : false, // Đọc từ document
-
+      pizzaId: map['pizzaId'] ?? '',
+      picture: map['picture'] ?? '',
+      isVeg: map['isVeg'] ?? false,
+      spicy: map['spicy'] ?? 0,
+      name: map['name'] ?? '',
+      description: map['description'] ?? '',
+      price: map['price'] ?? 0,
+      discount: map['discount'] ?? 0,
+      macros: MacrosEntity.fromMap(map['macros'] ?? {}),
+      quantity: map['quantity'] is int ? map['quantity'] : 1,
+      isSelected: map['isSelected'] is bool ? map['isSelected'] : false,
     );
   }
 }

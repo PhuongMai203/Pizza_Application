@@ -22,6 +22,7 @@ class _CartScreenState extends State<CartScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Giỏ Hàng"),
+        backgroundColor: Colors.blue.shade100,
       ),
       body: BlocBuilder<CartBloc, CartState>(
         builder: (context, state) {
@@ -49,7 +50,7 @@ class _CartScreenState extends State<CartScreen> {
             children: [
               Expanded(
                 child: Container(
-                  color: Colors.blue.shade50,
+                  color: Colors.white,
                   child: ListView.builder(
                     padding: const EdgeInsets.all(16),
                     itemCount: state.pizzas.length,

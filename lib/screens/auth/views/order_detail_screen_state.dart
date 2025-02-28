@@ -58,7 +58,11 @@ class OrderDetailScreenState extends State<OrderDetailScreen> {
     List<Color> statusColors = [Colors.orange, Colors.blue, Colors.green];
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Chi tiết đơn hàng")),
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: const Text("Chi tiết đơn hàng"),
+        backgroundColor: Colors.blue.shade100,
+      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

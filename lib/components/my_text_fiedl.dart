@@ -31,31 +31,39 @@ class MyTextField extends StatelessWidget {
 	@override
 	Widget build(BuildContext context) {
 		return TextFormField(
-      validator: validator,
-      controller: controller,
-      obscureText: obscureText,
+			validator: validator,
+			controller: controller,
+			obscureText: obscureText,
 			keyboardType: keyboardType,
 			focusNode: focusNode,
 			onTap: onTap,
 			textInputAction: TextInputAction.next,
 			onChanged: onChanged,
-      decoration: InputDecoration(
+			decoration: InputDecoration(
 				suffixIcon: suffixIcon,
 				prefixIcon: prefixIcon,
 				enabledBorder: OutlineInputBorder(
 					borderRadius: BorderRadius.circular(10),
-					borderSide: const BorderSide(color: Colors.transparent),
+					borderSide: const BorderSide(color: Colors.blue, width: 2), // Viền xanh khi chưa focus
 				),
 				focusedBorder: OutlineInputBorder(
 					borderRadius: BorderRadius.circular(20),
-					borderSide: BorderSide(color: Theme.of(context).colorScheme.secondary),
+					borderSide: const BorderSide(color: Colors.blueAccent, width: 2), // Viền xanh đậm khi focus
 				),
-				fillColor: Colors.lightBlueAccent,
+				errorBorder: OutlineInputBorder(
+					borderRadius: BorderRadius.circular(10),
+					borderSide: const BorderSide(color: Colors.red, width: 2), // Viền đỏ khi có lỗi
+				),
+				focusedErrorBorder: OutlineInputBorder(
+					borderRadius: BorderRadius.circular(20),
+					borderSide: const BorderSide(color: Colors.redAccent, width: 2), // Viền đỏ khi lỗi và focus
+				),
+				fillColor: Colors.blue.shade50,
 				filled: true,
 				hintText: hintText,
-				hintStyle: TextStyle(color: Colors.lightBlueAccent),
+				hintStyle: TextStyle(color: Colors.grey.shade700),
 				errorText: errorMsg,
 			),
-    );
+		);
 	}
 }

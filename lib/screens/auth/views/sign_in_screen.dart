@@ -60,7 +60,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   }
                 },
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 14.0),
                   child: Form(
                     key: _formKey,
                     child: SingleChildScrollView(
@@ -75,7 +75,7 @@ class _SignInScreenState extends State<SignInScreen> {
                               hintText: 'Email',
                               obscureText: false,
                               keyboardType: TextInputType.emailAddress,
-                              prefixIcon: const Icon(CupertinoIcons.mail_solid),
+                              prefixIcon: const Icon(CupertinoIcons.mail_solid, color: Colors.blue,),
                               errorMsg: _errorMsg,
                               validator: (val) {
                                 if (val!.isEmpty) {
@@ -104,7 +104,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                       hintText: 'Password',
                                       obscureText: obscurePassword,
                                       keyboardType: TextInputType.visiblePassword,
-                                      prefixIcon: const Icon(CupertinoIcons.lock_fill),
+                                      prefixIcon: const Icon(CupertinoIcons.lock_fill, color: Colors.blue,),
                                       errorMsg: _errorMsg,
                                       validator: (val) {
                                         if (val!.isEmpty) {
@@ -121,7 +121,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                                 : CupertinoIcons.eye_slash_fill;
                                           });
                                         },
-                                        icon: Icon(iconPassword),
+                                        icon: Icon(iconPassword, color: Colors.blue,),
                                       ),
                                     ),
                                   ),
@@ -143,7 +143,10 @@ class _SignInScreenState extends State<SignInScreen> {
                                 ),
                               );
                             },
-                            child: const Text("Quên mật khẩu?", style: TextStyle(color: Colors.blue)),
+                            child: const Text(
+                              "Quên mật khẩu?",
+                              style: TextStyle(color: Colors.black),
+                            ),
                           ),
 
                           const SizedBox(height: 5),

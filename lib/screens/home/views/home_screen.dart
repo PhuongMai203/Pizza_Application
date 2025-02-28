@@ -10,10 +10,15 @@ import '../../auth/blocs/sign_in_bloc/sign_in_bloc.dart';
 import '../../auth/views/cart_screen.dart';
 import 'package:intl/intl.dart'; // Import thư viện intl
 
-class HomeScreen extends StatelessWidget {
-
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+class _HomeScreenState extends State<HomeScreen> {
   static final formatCurrency = NumberFormat.currency(locale: 'vi_VN', symbol: '₫');
+  String searchQuery = "";
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,20 +31,59 @@ class HomeScreen extends StatelessWidget {
               'assets/8.png',
               scale: 14,
             ),
-            SizedBox(
-              width: 5,
-            ),
+            SizedBox(width: 5),
             Text(
               'PIZZA',
               style: TextStyle(
-                  fontWeight: FontWeight.w900,
-                  fontSize: 30
+                fontWeight: FontWeight.w900,
+                fontSize: 22,
               ),
-            )
+            ),
           ],
         ),
         actions: [
-          BlocBuilder<CartBloc, CartState>(  // Lắng nghe trạng thái giỏ hàng
+          // Ô nhập tìm kiếm
+          SizedBox(
+            width: 200, // Giới hạn chiều rộng của ô tìm kiếm
+            child: TextField(
+              onChanged: (value) {
+                setState(() {
+                  searchQuery = value.toLowerCase(); // Cập nhật từ khóa tìm kiếm
+                });
+              },
+              decoration: InputDecoration(
+                //hintText: "Tìm kiếm pizza...",
+                suffixIcon: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      width: 1, // Độ rộng đường kẻ
+                      height: 24, // Chiều cao đường kẻ
+                      color: Colors.blue.shade700, // Màu sắc đường kẻ
+                      margin: EdgeInsets.symmetric(horizontal: 8), // Căn lề hai bên
+                    ),
+                    const Icon(CupertinoIcons.search), // Icon tìm kiếm
+                    SizedBox(width: 8), // Khoảng cách giữa icon và viền phải
+                  ],
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10), // Bo tròn góc
+                  borderSide: BorderSide(color: Colors.blue.shade100, width: 2), // Viền màu xanh
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: BorderSide(color: Colors.blue.shade100, width: 2),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: BorderSide(color: Colors.blue.shade200, width: 2), // Khi focus, viền đậm hơn
+                ),
+                contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 12), // Căn lề nội dung
+              ),
+            ),
+          ),
+
+          BlocBuilder<CartBloc, CartState>( // Lắng nghe trạng thái giỏ hàng
             builder: (context, cartState) {
               return IconButton(
                 onPressed: () {
@@ -52,7 +96,6 @@ class HomeScreen extends StatelessWidget {
                       ),
                     ),
                   );
-
                 },
                 icon: Stack(
                   children: [
@@ -65,11 +108,8 @@ class HomeScreen extends StatelessWidget {
                           radius: 8,
                           backgroundColor: Colors.red,
                           child: Text(
-                            cartState.pizzas.fold(0, (sum, pizza) => sum + pizza.quantity).toString(), // ✅ Tính tổng số lượng
-                            style: const TextStyle(
-                              fontSize: 12,
-                              color: Colors.white,
-                            ),
+                            cartState.pizzas.fold(0, (sum, pizza) => sum + pizza.quantity).toString(),
+                            style: const TextStyle(fontSize: 12, color: Colors.white),
                           ),
                         ),
                       ),
@@ -78,19 +118,19 @@ class HomeScreen extends StatelessWidget {
               );
             },
           ),
-          IconButton(
-            onPressed: () {
-              context.read<SignInBloc>().add(SignOutRequired());
-            },
-            icon: const Icon(CupertinoIcons.arrow_right_to_line),
-          ),
+          // IconButton(
+          //   onPressed: () {
+          //     context.read<SignInBloc>().add(SignOutRequired());
+          //   },
+          //   icon: const Icon(CupertinoIcons.arrow_right_to_line),
+          // ),
           IconButton(
             onPressed: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => BlocProvider.value(
-                    value: context.read<SignInBloc>(), // ✅ Đảm bảo SignInBloc được cung cấp
+                    value: context.read<SignInBloc>(), // Đảm bảo SignInBloc được cung cấp
                     child: const UserProfileScreen(),
                   ),
                 ),
@@ -98,14 +138,29 @@ class HomeScreen extends StatelessWidget {
             },
             icon: const Icon(CupertinoIcons.person_alt_circle),
           ),
-
         ],
       ),
+
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: BlocBuilder<GetPizzaBloc, GetPizzaState>(
           builder: (context, state) {
             if (state is GetPizzaSuccess) {
+              // Lọc danh sách pizza theo searchQuery
+              final filteredPizzas = searchQuery.isEmpty
+                  ? state.pizzas
+                  : state.pizzas
+                  .where((pizza) => pizza.name.toLowerCase().contains(searchQuery.toLowerCase()))
+                  .toList();
+
+              if (filteredPizzas.isEmpty) {
+                return const Center(
+                  child: Text(
+                    "Không tìm thấy kết quả!",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: Colors.red),
+                  ),
+                );
+              }
               return GridView.builder(
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
@@ -199,7 +254,7 @@ class HomeScreen extends StatelessWidget {
                               state.pizzas[i].description,
                               style: TextStyle(
                                 fontSize: 10,
-                                color: Colors.grey.shade700,
+                                color: Colors.grey.shade900,
                                 fontWeight: FontWeight.w400,
                               ),
                             ),
@@ -224,7 +279,7 @@ class HomeScreen extends StatelessWidget {
                                       formatCurrency.format(state.pizzas[i].price), // Hiển thị giá gốc
                                       style: TextStyle(
                                           fontSize: 12,
-                                          color: Colors.grey.shade500,
+                                          color: Colors.grey.shade700,
                                           fontWeight: FontWeight.w700,
                                           decoration: TextDecoration.lineThrough
                                       ),

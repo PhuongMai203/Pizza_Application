@@ -13,7 +13,7 @@ class Macros {
     required this.carbs,
   });
 
-  // Phương thức chuyển từ Macros thành MacrosEntity
+  // ✅ Chuyển đổi Macros thành MacrosEntity
   MacrosEntity toEntity() {
     return MacrosEntity(
       calories: calories,
@@ -23,12 +23,33 @@ class Macros {
     );
   }
 
+  // ✅ Chuyển đổi MacrosEntity thành Macros
   static Macros fromEntity(MacrosEntity entity) {
     return Macros(
-        calories: entity.calories,
-        proteins: entity.proteins,
-        fat: entity.fat,
-        carbs: entity.carbs
+      calories: entity.calories,
+      proteins: entity.proteins,
+      fat: entity.fat,
+      carbs: entity.carbs,
+    );
+  }
+
+  // ✅ Chuyển Macros thành Map để lưu vào Firestore
+  Map<String, dynamic> toMap() {
+    return {
+      'calories': calories,
+      'proteins': proteins,
+      'fat': fat,
+      'carbs': carbs,
+    };
+  }
+
+  // ✅ Chuyển Map từ Firestore thành Macros
+  static Macros fromMap(Map<String, dynamic> map) {
+    return Macros(
+      calories: map['calories'] ?? 0,
+      proteins: map['proteins'] ?? 0,
+      fat: map['fat'] ?? 0,
+      carbs: map['carbs'] ?? 0,
     );
   }
 }
