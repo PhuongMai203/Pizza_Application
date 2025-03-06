@@ -13,6 +13,9 @@ class Pizza {
   final Macros macros;
   final int quantity;
   final bool isSelected;
+  final double rating;
+  final int reviewsCount;
+
 
   Pizza({
     required this.pizzaId,
@@ -26,7 +29,11 @@ class Pizza {
     required this.macros,
     this.quantity = 1,
     this.isSelected = false,
+    required this.rating,
+    required this.reviewsCount,
+
   });
+
   // ✅ Chuyển từ PizzaEntity sang Pizza
   static Pizza fromEntity(PizzaEntity entity) {
     return Pizza(
@@ -41,8 +48,12 @@ class Pizza {
       macros: Macros.fromEntity(entity.macros),
       quantity: entity.quantity,
       isSelected: entity.isSelected,
+      rating: entity.rating,
+      reviewsCount: entity.reviewsCount,
+
     );
   }
+
   // ✅ Chuyển Pizza thành PizzaEntity
   PizzaEntity toEntity() {
     return PizzaEntity(
@@ -57,9 +68,14 @@ class Pizza {
       macros: macros.toEntity(),
       quantity: quantity,
       isSelected: isSelected,
+      rating: rating,
+      reviewsCount: reviewsCount,
+
     );
   }
-  Pizza copyWith({int? quantity, bool? isSelected}) {
+
+  // ✅ Tạo một bản sao của Pizza với giá trị mới
+  Pizza copyWith({int? quantity, bool? isSelected, double? rating, int? reviewsCount}) {
     return Pizza(
       pizzaId: pizzaId,
       picture: picture,
@@ -72,6 +88,8 @@ class Pizza {
       macros: macros,
       quantity: quantity ?? this.quantity,
       isSelected: isSelected ?? this.isSelected,
+      rating: rating ?? this.rating,
+      reviewsCount: reviewsCount ?? this.reviewsCount,
     );
   }
 
@@ -89,23 +107,28 @@ class Pizza {
       'macros': macros.toMap(),
       'quantity': quantity,
       'isSelected': isSelected,
+      'rating': rating,
+      'reviewsCount': reviewsCount,
     };
   }
 
   // ✅ Chuyển từ Map Firestore thành Pizza object
   factory Pizza.fromMap(Map<String, dynamic> map) {
     return Pizza(
-      pizzaId: map['pizzaId'] ?? '',
-      picture: map['picture'] ?? '',
-      isVeg: map['isVeg'] ?? false,
-      spicy: map['spicy'] ?? 0,
-      name: map['name'] ?? '',
-      description: map['description'] ?? '',
-      price: map['price'] ?? 0,
-      discount: map['discount'] ?? 0,
-      macros: Macros.fromMap(map['macros'] ?? {}),
-      quantity: map['quantity'] ?? 1,
-      isSelected: map['isSelected'] ?? false,
+      pizzaId: map['pizzaId'] as String? ?? '',
+      picture: map['picture'] as String? ?? '',
+      isVeg: map['isVeg'] as bool? ?? false,
+      spicy: map['spicy'] as int? ?? 0,
+      name: map['name'] as String? ?? '',
+      description: map['description'] as String? ?? '',
+      price: map['price'] as int? ?? 0,
+      discount: map['discount'] as int? ?? 0,
+      macros: Macros.fromMap(map['macros'] as Map<String, dynamic>? ?? {}),
+      quantity: map['quantity'] as int? ?? 1,
+      isSelected: map['isSelected'] as bool? ?? false,
+      rating: (map['rating'] as num?)?.toDouble() ?? 0.0, // ✅ Đảm bảo rating là double
+      reviewsCount: map['reviewsCount'] as int? ?? 0,
+
     );
   }
 }

@@ -1,19 +1,26 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:pizza_app/components/macro.dart';
+import 'package:pizza_app/screens/auth/blocs/cart_blocs/cart_event_bloc.dart';
 import 'package:pizza_repository/pizza_repository.dart';
 
+import '../../auth/blocs/cart_blocs/cart_bloc.dart';
 
 class DetailsScreen extends StatelessWidget {
   final Pizza pizza;
   const DetailsScreen(this.pizza, {super.key});
+
+  static final formatCurrency = NumberFormat.currency(locale: 'vi_VN', symbol: '₫');
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
+        title: const Text("Chi tiết sản phẩm", style: TextStyle(fontWeight: FontWeight.bold)),
         backgroundColor: Theme.of(context).colorScheme.surface,
 
       ),
@@ -30,16 +37,16 @@ class DetailsScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(30),
                   boxShadow:const [
                     BoxShadow(
-                    color: Colors.grey,
-                    offset: Offset(3, 3),
-                    blurRadius: 5
+                        color: Colors.grey,
+                        offset: Offset(3, 3),
+                        blurRadius: 5
                     ),
                   ],
-          
+
                   image: DecorationImage(
-                      image: NetworkImage(
+                    image: NetworkImage(
                         pizza.picture
-                      ),
+                    ),
                   ),
                 ),
               ),
@@ -66,7 +73,7 @@ class DetailsScreen extends StatelessWidget {
                           Expanded(
                             flex:2,
                             child: Text(
-                               pizza.name ,
+                              pizza.name ,
                               style: const TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
@@ -81,7 +88,7 @@ class DetailsScreen extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.end,
                                 children: [
                                   Text(
-                                    "\$${pizza.price - (pizza.price *(pizza.discount)/100)}",
+                                    formatCurrency.format(pizza.price - (pizza.price * pizza.discount / 100)),
                                     style: TextStyle(
                                       fontSize: 20,
                                       fontWeight: FontWeight.bold,
@@ -89,12 +96,12 @@ class DetailsScreen extends StatelessWidget {
                                     ),
                                   ),
                                   Text(
-                                    "\$${pizza.price}.00",
+                                    formatCurrency.format(pizza.price),
                                     style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.grey,
-                                      decoration: TextDecoration.lineThrough
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.grey,
+                                        decoration: TextDecoration.lineThrough
                                     ),
                                   ),
                                 ],
@@ -103,7 +110,7 @@ class DetailsScreen extends StatelessWidget {
                           ),
                         ],
                       ),
-                     const SizedBox(height: 12,),
+                      const SizedBox(height: 12,),
                       Row(
                         children: [
                           MyMacroWidget(
@@ -132,29 +139,67 @@ class DetailsScreen extends StatelessWidget {
                         ],
                       ),
                       const SizedBox(height: 12,),
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width,
-                        height: 50,
-                        child: TextButton(
-                            onPressed: (){
-          
-                        },
-                        style: TextButton.styleFrom(
-                          elevation: 3.0,
-                          backgroundColor: Theme.of(context).colorScheme.primary,
-                          foregroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10)
-                          )
+                      Padding(
+                        padding: const EdgeInsets.only(top: 0.5),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Mô tả sản phẩm
+                            Text(
+                              pizza.description,
+                              style: const TextStyle(
+                                fontSize: 16,
+                              ),
+                            ),
+                            const SizedBox(height: 10,),
+                            // Đánh giá
+                            Row(
+                              children: [
+                                Icon(Icons.star, color: Colors.amber),
+                                Text('${pizza.rating} (${pizza.reviewsCount} reviews)'),
+                                SizedBox(width: 10), // Khoảng cách
+                                Spacer(),
+                                Icon(Icons.shopping_cart),
+                                Text('Đã bán'),
+                              ],
+                            )
+                          ],
                         ),
-                        child:const Text(
-                          "Buy Now",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 20,
-                            fontWeight: FontWeight.w600
-                          ),
-                        )),
+                      ),
+                      const SizedBox(height: 12,),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 0.5),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            IconButton(
+                              onPressed: () {
+                                context.read<CartBloc>().add(RemoveFromCart(pizza));
+                              },
+                              icon: const Icon(
+                                CupertinoIcons.minus_circle,
+                                size: 20,
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                              child: Text(
+                                "${pizza.quantity}",
+                                style: const TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                            IconButton(
+                              onPressed: () {
+                                context.read<CartBloc>().add(AddToCart(pizza));
+                              },
+                              icon: const Icon(
+                                CupertinoIcons.add_circled,
+                                size: 20,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),

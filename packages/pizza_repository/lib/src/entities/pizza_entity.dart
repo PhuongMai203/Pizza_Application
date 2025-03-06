@@ -13,6 +13,9 @@ class PizzaEntity {
   final MacrosEntity macros;
   final int quantity;
   final bool isSelected;
+  final double rating;
+  final int reviewsCount;
+
 
   PizzaEntity({
     required this.pizzaId,
@@ -26,6 +29,9 @@ class PizzaEntity {
     required this.macros,
     required this.quantity,
     required this.isSelected,
+    required this.rating,
+    required this.reviewsCount,
+
   });
 
   // ✅ Chuyển PizzaEntity thành Map để lưu vào Firestore
@@ -42,6 +48,9 @@ class PizzaEntity {
       'macros': macros.toMap(),
       'quantity': quantity,
       'isSelected': isSelected,
+      'rating': rating,
+      'reviewsCount': reviewsCount,
+
     };
   }
 
@@ -59,6 +68,9 @@ class PizzaEntity {
       macros: MacrosEntity.fromMap(map['macros'] ?? {}),
       quantity: map['quantity'] is int ? map['quantity'] : 1,
       isSelected: map['isSelected'] is bool ? map['isSelected'] : false,
+      rating: (map['rating'] as num?)?.toDouble() ?? 0.0,
+      reviewsCount: map['reviewsCount'] ?? 0,
+
     );
   }
 }

@@ -33,6 +33,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   final TextEditingController addressController = TextEditingController();
   final TextEditingController noteController = TextEditingController();
   final TextEditingController _bankAccountController = TextEditingController(); // Thêm controller cho tài khoản ngân hàng
+  bool isScheduledDelivery = false; // Mặc định là giao ngay
+  DateTime? selectedDeliveryTime; // Lưu thời gian giao hàng
 
   String selectedPaymentMethod = "Tiền mặt";
   final double shippingFee = 20000;
@@ -140,6 +142,23 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         color: Colors.red)),
               ],
             ),
+            const SizedBox(height: 20),
+            const Text("Thời gian giao hàng",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+
+            SwitchListTile(
+              title: const Text("Hẹn giờ giao hàng"),
+              value: isScheduledDelivery,
+              onChanged: (value) {
+                setState(() {
+                  isScheduledDelivery = value;
+                  if (!isScheduledDelivery) selectedDeliveryTime = null;
+                });
+              },
+            ),
+
+            if (isScheduledDelivery) _buildDateTimePicker(),
+
 
             const SizedBox(height: 20),
             SizedBox(
@@ -290,6 +309,53 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       ),
     );
   }
+  Widget _buildDateTimePicker() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          TextButton(
+            onPressed: () async {
+              DateTime now = DateTime.now();
+              DateTime? pickedDate = await showDatePicker(
+                context: context,
+                initialDate: now,
+                firstDate: now,
+                lastDate: now.add(const Duration(days: 7)), // Chỉ cho đặt trước tối đa 7 ngày
+              );
+
+              if (pickedDate != null) {
+                TimeOfDay? pickedTime = await showTimePicker(
+                  context: context,
+                  initialTime: TimeOfDay.now(),
+                );
+
+                if (pickedTime != null) {
+                  setState(() {
+                    selectedDeliveryTime = DateTime(
+                      pickedDate.year,
+                      pickedDate.month,
+                      pickedDate.day,
+                      pickedTime.hour,
+                      pickedTime.minute,
+                    );
+                  });
+                }
+              }
+            },
+            child: Text(
+              selectedDeliveryTime == null
+                  ? "Chọn ngày & giờ giao hàng"
+                  : "Giao lúc: ${DateFormat('dd/MM/yyyy HH:mm').format(selectedDeliveryTime!)}",
+              style: const TextStyle(fontSize: 16, color: Colors.blue),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
 
   void _placeOrder() {
     if (nameController.text.isEmpty ||
@@ -301,19 +367,30 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       return;
     }
 
-    if (widget.selectedPizzas.isNotEmpty) {
-      Pizza firstPizza = widget.selectedPizzas.first; // Chọn pizza đầu tiên
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      FirebaseFirestore.instance.collection('orders').add({
+        "userId": user.uid,
+        "name": nameController.text,
+        "phone": phoneController.text,
+        "address": addressController.text,
+        "totalPrice": widget.totalPrice,
+        "paymentMethod": selectedPaymentMethod,
+        "deliveryTime": isScheduledDelivery
+            ? selectedDeliveryTime
+            : "Giao ngay", // Lưu thời gian giao hàng
+        "status": "Đang xử lý",
+        "createdAt": FieldValue.serverTimestamp(),
+      });
 
       Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => OrderDetailScreen(
-            itemName: firstPizza.name,
-            itemImage: firstPizza.picture,
-            quantity: firstPizza.quantity,
-            totalPrice:
-            (firstPizza.price - (firstPizza.price * firstPizza.discount / 100)) *
-                firstPizza.quantity,
+            itemName: widget.selectedPizzas.first.name,
+            itemImage: widget.selectedPizzas.first.picture,
+            quantity: widget.selectedPizzas.first.quantity,
+            totalPrice: widget.totalPrice,
             selectedPizzas: widget.selectedPizzas,
           ),
         ),
