@@ -5,10 +5,11 @@ import 'package:pizza_app/app.dart';
 import 'package:pizza_app/simple_bloc_observer.dart';
 import 'package:user_repository/user_repository.dart';
 import 'firebase_options.dart'; // Đảm bảo đã tạo file này bằng `flutterfire configure`
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
+  await dotenv.load(fileName: ".env");
   try {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform, // Đảm bảo chạy được trên Web

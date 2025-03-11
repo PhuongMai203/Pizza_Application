@@ -6,8 +6,9 @@ import 'package:pizza_app/screens/auth/blocs/bloc/sign_up_bloc.dart';
 import 'package:pizza_app/screens/auth/blocs/cart_blocs/cart_bloc.dart';
 import 'package:pizza_app/screens/auth/blocs/forgot_pass/forgot_password_bloc.dart';
 import 'package:pizza_app/screens/auth/blocs/sign_in_bloc/sign_in_bloc.dart';
-import 'package:pizza_app/screens/auth/views/chatbot.dart';
+
 import 'package:pizza_app/screens/auth/views/welcome_screen.dart';
+import 'package:pizza_app/screens/chat_screen.dart';
 import 'package:pizza_app/screens/home/blocs/get_pizza_bloc/get_pizza_bloc.dart';
 import 'package:pizza_app/screens/home/views/home_screen.dart';
 import 'package:pizza_repository/pizza_repository.dart';

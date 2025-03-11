@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../components/my_text_fiedl.dart';
+import '../../admin/admin_screen.dart';
+import '../../home/views/home_screen.dart';
 import '../blocs/forgot_pass/forgot_password_bloc.dart';
 import '../blocs/sign_in_bloc/sign_in_bloc.dart';
 import 'forgot_password_screen.dart';
@@ -28,18 +30,15 @@ class _SignInScreenState extends State<SignInScreen> {
       body: Stack(
         alignment: Alignment.center,
         children: [
-          // Background Gradient
           Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: [Colors.blue.shade50, Colors.blue.shade100], // 🎨 Chỉnh màu theo ý bạn
+                colors: [Colors.blue.shade50, Colors.blue.shade100],
               ),
             ),
           ),
-
-          // Nội dung chính
           SafeArea(
             child: Center(
               child: BlocListener<SignInBloc, SignInState>(
@@ -48,6 +47,19 @@ class _SignInScreenState extends State<SignInScreen> {
                     setState(() {
                       signInRequired = false;
                     });
+
+                    // Kiểm tra nếu là tài khoản admin
+                    if (state.user.email == "maingoc162k3@gmail.com") {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => AdminDashboard()),
+                      );
+                    } else {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => HomeScreen()),
+                      );
+                    }
                   } else if (state is SignInProcess) {
                     setState(() {
                       signInRequired = true;
@@ -75,7 +87,7 @@ class _SignInScreenState extends State<SignInScreen> {
                               hintText: 'Email',
                               obscureText: false,
                               keyboardType: TextInputType.emailAddress,
-                              prefixIcon: const Icon(CupertinoIcons.mail_solid, color: Colors.blue,),
+                              prefixIcon: const Icon(CupertinoIcons.mail_solid, color: Colors.blue),
                               errorMsg: _errorMsg,
                               validator: (val) {
                                 if (val!.isEmpty) {
@@ -104,7 +116,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                       hintText: 'Password',
                                       obscureText: obscurePassword,
                                       keyboardType: TextInputType.visiblePassword,
-                                      prefixIcon: const Icon(CupertinoIcons.lock_fill, color: Colors.blue,),
+                                      prefixIcon: const Icon(CupertinoIcons.lock_fill, color: Colors.blue),
                                       errorMsg: _errorMsg,
                                       validator: (val) {
                                         if (val!.isEmpty) {
@@ -121,7 +133,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                                 : CupertinoIcons.eye_slash_fill;
                                           });
                                         },
-                                        icon: Icon(iconPassword, color: Colors.blue,),
+                                        icon: Icon(iconPassword, color: Colors.blue),
                                       ),
                                     ),
                                   ),
@@ -130,7 +142,6 @@ class _SignInScreenState extends State<SignInScreen> {
                             ),
                           ),
                           const SizedBox(height: 1),
-                          // Nút "Quên mật khẩu?"
                           TextButton(
                             onPressed: () {
                               Navigator.push(
@@ -148,7 +159,6 @@ class _SignInScreenState extends State<SignInScreen> {
                               style: TextStyle(color: Colors.black),
                             ),
                           ),
-
                           const SizedBox(height: 5),
                           !signInRequired
                               ? SizedBox(
@@ -157,18 +167,18 @@ class _SignInScreenState extends State<SignInScreen> {
                               onPressed: () {
                                 if (_formKey.currentState!.validate()) {
                                   context.read<SignInBloc>().add(SignInRequired(
-                                      emailController.text,
-                                      passwordController.text)
-                                  );
+                                    emailController.text,
+                                    passwordController.text,
+                                  ));
                                 }
                               },
                               style: TextButton.styleFrom(
-                                  elevation: 3.0,
-                                  backgroundColor: Theme.of(context).colorScheme.primary,
-                                  foregroundColor: Colors.white,
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(60)
-                                  )
+                                elevation: 3.0,
+                                backgroundColor: Theme.of(context).colorScheme.primary,
+                                foregroundColor: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(60),
+                                ),
                               ),
                               child: const Padding(
                                 padding: EdgeInsets.symmetric(horizontal: 25, vertical: 5),
@@ -176,9 +186,9 @@ class _SignInScreenState extends State<SignInScreen> {
                                   'Sign In',
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
                                   ),
                                 ),
                               ),

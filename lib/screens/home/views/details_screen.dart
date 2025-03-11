@@ -5,9 +5,12 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:pizza_app/components/macro.dart';
 import 'package:pizza_app/screens/auth/blocs/cart_blocs/cart_event_bloc.dart';
+import 'package:pizza_app/screens/home/views/user_profile_screen.dart';
 import 'package:pizza_repository/pizza_repository.dart';
 
 import '../../auth/blocs/cart_blocs/cart_bloc.dart';
+import '../../auth/blocs/sign_in_bloc/sign_in_bloc.dart';
+import '../../auth/views/cart_screen.dart';
 
 class DetailsScreen extends StatelessWidget {
   final Pizza pizza;
@@ -22,7 +25,57 @@ class DetailsScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text("Chi tiết sản phẩm", style: TextStyle(fontWeight: FontWeight.bold)),
         backgroundColor: Theme.of(context).colorScheme.surface,
-
+          actions: [
+            BlocBuilder<CartBloc, CartState>( // Lắng nghe trạng thái giỏ hàng
+              builder: (context, cartState) {
+                return IconButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => BlocProvider.value(
+                          value: context.read<CartBloc>(),
+                          child: const CartScreen(),
+                        ),
+                      ),
+                    );
+                  },
+                  icon: Stack(
+                    children: [
+                      const Icon(CupertinoIcons.cart),
+                      if (cartState.pizzas.isNotEmpty)
+                        Positioned(
+                          right: 0,
+                          top: 0,
+                          child: CircleAvatar(
+                            radius: 8,
+                            backgroundColor: Colors.red,
+                            child: Text(
+                              cartState.pizzas.fold(0, (sum, pizza) => sum + pizza.quantity).toString(),
+                              style: const TextStyle(fontSize: 12, color: Colors.white),
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                );
+              },
+            ),
+        IconButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => BlocProvider.value(
+                  value: context.read<SignInBloc>(), // Đảm bảo SignInBloc được cung cấp
+                  child: const UserProfileScreen(),
+                ),
+              ),
+            );
+          },
+          icon: const Icon(CupertinoIcons.person_alt_circle),
+        ),
+        ]
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),

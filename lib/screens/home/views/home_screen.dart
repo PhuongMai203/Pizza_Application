@@ -134,12 +134,12 @@ class _HomeScreenState extends State<HomeScreen> {
               );
             },
           ),
-          // IconButton(
-          //   onPressed: () {
-          //     context.read<SignInBloc>().add(SignOutRequired());
-          //   },
-          //   icon: const Icon(CupertinoIcons.arrow_right_to_line),
-          // ),
+          IconButton(
+            onPressed: () {
+              context.read<SignInBloc>().add(SignOutRequired());
+            },
+            icon: const Icon(CupertinoIcons.arrow_right_to_line),
+          ),
           IconButton(
             onPressed: () {
               Navigator.push(
